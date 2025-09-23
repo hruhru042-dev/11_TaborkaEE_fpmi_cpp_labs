@@ -1,12 +1,8 @@
-# Ignore
-*.cbp
-*.depend
-*.layout
+# Ignore 
 *~
 *#
 a.out
 *.out
-*.exe
 *.a
 *.o
 .vscode/

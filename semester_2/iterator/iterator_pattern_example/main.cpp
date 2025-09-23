@@ -11,6 +11,7 @@ void PrintContainterWithIterator(const Container& c) {
     for (it->First(); !it->IsDone(); it->Next()) {
         std::cout << it->CurrentItem() << ' ';;
     }
+    //
 
     // delete iterator, because
     // it is a pointer

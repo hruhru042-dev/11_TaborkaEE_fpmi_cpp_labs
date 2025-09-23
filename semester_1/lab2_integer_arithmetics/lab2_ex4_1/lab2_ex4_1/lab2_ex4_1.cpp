@@ -5,7 +5,7 @@ int main() {
     std::cout << "enter n:\n";
     std::cin >> n;
 
-    std::cout << "perfect numbers <= n " << n << ": ";
+    std::cout << "perfect numbers <= n = " << n << ": ";
     for (int i = 2; i <= n; ++i) {
         int sum = 0;
         for (int t = 1; t <= i / 2; ++t) {

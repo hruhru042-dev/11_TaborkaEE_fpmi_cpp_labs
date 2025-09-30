@@ -1,0 +1,4 @@
+﻿  lab3_var19_fin.cpp
+C:\Users\User\11_TaborkaEE_fpmi_cpp_labs\semester_1\lab3_pointers_and_arrays\lab3_var19_fin\lab3_var19_fin\lab3_var19_fin.cpp(39,26): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\Users\User\11_TaborkaEE_fpmi_cpp_labs\semester_1\lab3_pointers_and_arrays\lab3_var19_fin\lab3_var19_fin\lab3_var19_fin.cpp(34,28): warning C4101: rd: неиспользованная локальная переменная
+  lab3_var19_fin.vcxproj -> C:\Users\User\11_TaborkaEE_fpmi_cpp_labs\semester_1\lab3_pointers_and_arrays\lab3_var19_fin\x64\Debug\lab3_var19_fin.exe

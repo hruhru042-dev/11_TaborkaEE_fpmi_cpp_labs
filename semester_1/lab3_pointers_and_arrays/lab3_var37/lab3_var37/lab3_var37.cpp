@@ -10,7 +10,10 @@ void mySwap(float& a, float& b) {
 int main() {
     int n;
     std::cout << "Enter size of array: ";
-    std::cin >> n;
+    if (!(std::cin >> n) || (n <= 0)) {
+        std::cout << "Input error, enter non negative integer number " << std::endl;
+        return 1;
+    }
     if (n <= 0) {
         std::cout << "Invalid size!" << std::endl;
         return 1;

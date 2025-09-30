@@ -1,4 +1,1 @@
-﻿  lab3_var19_fin.cpp
-C:\Users\User\11_TaborkaEE_fpmi_cpp_labs\semester_1\lab3_pointers_and_arrays\lab3_var19_fin\lab3_var19_fin\lab3_var19_fin.cpp(39,26): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-C:\Users\User\11_TaborkaEE_fpmi_cpp_labs\semester_1\lab3_pointers_and_arrays\lab3_var19_fin\lab3_var19_fin\lab3_var19_fin.cpp(34,28): warning C4101: rd: неиспользованная локальная переменная
-  lab3_var19_fin.vcxproj -> C:\Users\User\11_TaborkaEE_fpmi_cpp_labs\semester_1\lab3_pointers_and_arrays\lab3_var19_fin\x64\Debug\lab3_var19_fin.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(439,5): error MSB8020: Не удается найти средства сборки для v143 (набор инструментов платформы = "v143"). Чтобы выполнить сборку с использованием средств сборки v143 установите средства сборки v143.  Кроме того, можно выполнить обновление до текущей версии средств Visual Studio, перейдя в меню "Проект" или щелкнув решение правой кнопкой мыши и выбрав "Обновить решение...".

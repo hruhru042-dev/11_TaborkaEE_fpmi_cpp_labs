@@ -9,7 +9,10 @@ int main(){
     int n;
     float arr[length];  
     std::cout << "Enter size of array: ";
-    std::cin >> n;
+    if (!(std::cin >> n) || (n<=0)) {
+        std::cout << "Input error, enter non negative integer number " << std::endl;
+        return 1;
+    }
     if (n > length) {
         std::cout << "Size too large!" << std::endl;
         return 1;

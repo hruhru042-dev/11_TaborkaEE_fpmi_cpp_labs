@@ -1,11 +1,12 @@
 ﻿
 #include <iostream>
+#include <cmath>
 void Bubble(int a[], int size) {
 	int i, j;
 	int t;
 	for (i = 0; i < size; ++i) {
 		for (j = size - 1; j > i; --j) {
-			if (a[j - 1] > a[j]) {
+			if (std::abs(a[j - 1]) > std::abs(a[j])) {
 				t = a[j - 1];
 				a[j - 1] = a[j];
 				a[j] = t;
@@ -35,6 +36,7 @@ int main(){
 	}
 	return 0;
 }
+
 
 
 

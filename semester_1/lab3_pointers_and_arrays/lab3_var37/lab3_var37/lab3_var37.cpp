@@ -1,125 +1,155 @@
 ﻿#include <iostream>
 #include <random>
-#include <ctime>
-void mySwap(float& a, float& b) {
-    float temp = a;
-    a = b;
-    b = temp;
+#include <cmath>
+#include <cstdlib>
+void clearInput() {
+    std::cin.clear();
+    while (std::cin.get() != '\n');
+}
+int getValidSize() {
+    int size;
+    std::cout << "Enter size of array (1 to 1000000): ";
+    std::cin >> size;
+    if (!std::cin || size <= 0 || size > 1000000) {
+        std::cout << "Error: invalid size!\n";
+        clearInput();
+        std::exit(1);
+    }
+    clearInput();
+    return size;
+}
+int getChoice() {
+    int choice;
+    std::cout << "Choose input method — randomly (1) or manually (0): ";
+    std::cin >> choice;
+    if (!std::cin || (choice != 0 && choice != 1)) {
+        std::cout << "Error: enter 0 or 1!\n";
+        clearInput();
+        std::exit(1);
+    }
+    clearInput();
+    return choice;
+}
+float getValidFloat() {
+    float value;
+    std::cout << "Enter a float number: ";
+    std::cin >> value;
+    if (!std::cin) {
+        std::cout << "Error: invalid float input!\n";
+        clearInput();
+        std::exit(1);
+    }
+    clearInput();
+    return value;
 }
 void printArray(const float arr[], int size) {
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i) {
         std::cout << arr[i] << " ";
+    }
     std::cout << std::endl;
 }
-float absFloat(float x) {
-    return (x < 0) ? -x : x;
+void fillArrayRandom(float arr[], int size) {
+    std::cout << "Enter minimum range limit: ";
+    float min_val = getValidFloat();
+    std::cout << "Enter maximum range limit: ";
+    float max_val = getValidFloat();
+    if (max_val < min_val) {
+        std::swap(min_val, max_val);
+    }
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(min_val, max_val);
+    for (int i = 0; i < size; ++i) {
+        arr[i] = dist(gen);
+    }
 }
-int main() {
-    int size;
-    std::cout << "Enter size of array: ";
-    std::cin >> size;
-    if (size <= 0 || size > 1000000) {
-        std::cout << "Invalid or too large size!" << std::endl;
-        return 1;
-    }
-    float* arr = new float[size];
-    int choice;
-    std::cout << "How do you want to enter the array: randomly (enter 1) or by yourself (enter 0)? ";
-    std::cin >> choice;
-    switch (choice) {
-    case 1: {
-        srand(static_cast<unsigned>(time(0)));
-        float min_val, max_val;
-        std::cout << "Enter minimum range limit: ";
-        std::cin >> min_val;
-        std::cout << "Enter maximum range limit: ";
-        std::cin >> max_val;
-        if (max_val < min_val) {
-            float temp = max_val;
-            max_val = min_val;
-            min_val = temp;
-        }
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<float> dist(min_val, max_val);
-        for (int i = 0; i < size; ++i) {
-            arr[i] = dist(gen);
-        }
-        break;
-    }
-    case 0: {
-          for (int i = 0; i < size; ++i) {
-              std::cout << "Element " << i + 1 << ": ";
-              std::cin >> arr[i];
-              if (!(std::cin)) {
-                  std::cout << "Enter a number!" << std::endl;
-                  std::cin.clear();
-                  std::cin.ignore(10000, '\n');
-                  --i; 
-              }
-          }
-          break;
-    }
-    default:
-        std::cout << "Enter 1 or 0" << std::endl;
-            delete[] arr;
-            return 1;
-    }
-    std::cout << "Your array: ";
-    printArray(arr, size);
-    std::cout << std::endl;
-    int maxLength = 1; 
-    int currentLength = 1; 
-    for (int i = 1; i < size; ++i) {
-        if (arr[i] >= arr[i - 1]) {
-            ++currentLength; 
+void fillArrayManual(float arr[], int size) {
+    for (int i = 0; i < size; ++i) {
+        std::cout << "Element " << i + 1 << ": ";
+        std::cin >> arr[i];
+        if (!std::cin) {
+            std::cout << "Enter a valid number!\n";
+            clearInput();
+            --i;
         }
         else {
-            if (currentLength > maxLength) {
-                maxLength = currentLength;
-            }
+            clearInput();
+        }
+    }
+}
+int findLongestNonDecreasing(const float arr[], int size) {
+    int maxLength = 1, currentLength = 1;
+    for (int i = 1; i < size; ++i) {
+        if (arr[i] >= arr[i - 1])
+            ++currentLength;
+        else {
+            maxLength = std::max(maxLength, currentLength);
             currentLength = 1;
         }
     }
-    if (currentLength > maxLength) {
-        maxLength = currentLength;
-    }
-    std::cout << "Length of the longest ordered chain: " << maxLength << std::endl;
+    return std::max(maxLength, currentLength);
+}
+bool computeProductBetweenExtremes(const float arr[], int size, float& product) {
     int maxIdx = 0, minIdx = 0;
     for (int i = 1; i < size; ++i) {
-        if (absFloat(arr[i]) > absFloat(arr[maxIdx]))
-            maxIdx = i;
-        if (absFloat(arr[i]) < absFloat(arr[minIdx]))
-            minIdx = i;
+        if (std::abs(arr[i]) > std::abs(arr[maxIdx])) maxIdx = i;
+        if (std::abs(arr[i]) < std::abs(arr[minIdx])) minIdx = i;
     }
     int start = std::min(maxIdx, minIdx);
     int end = std::max(maxIdx, minIdx);
-    float product = 1.0;
-    if (start + 1 >= end) {
-        std::cout << "No elements between max and min by absolute value." << std::endl;
+    if (start + 1 >= end) return false;
+    product = 1.0f;
+    for (int i = start + 1; i < end; ++i) {
+        product *= arr[i];
     }
-    else {
-        for (int i = start + 1; i < end; ++i) {
-            product *= arr[i];
-        }
-        std::cout << "The product of elements between the maximum and minimum in absolute value: " << product << std::endl;
-    }
+    return true;
+}
+void sortEvenOdd(float arr[], int size) {
     for (int i = 0; i < size; i += 2) {
         for (int j = i + 2; j < size; j += 2) {
             if (arr[i] < arr[j]) {
-                mySwap(arr[i], arr[j]);
+                std::swap(arr[i], arr[j]);
             }
         }
     }
     for (int i = 1; i < size; i += 2) {
         for (int j = i + 2; j < size; j += 2) {
             if (arr[i] > arr[j]) {
-                mySwap(arr[i], arr[j]);
+                std::swap(arr[i], arr[j]);
             }
         }
     }
+}
+int main() {
+    int size = getValidSize();
+    float* arr = new float[size];
+    int choice = getChoice();
+    switch (choice) {
+    case 1: {
+        fillArrayRandom(arr, size);
+        break;
+    }
+    case 0: {
+        fillArrayManual(arr, size);
+        break;
+    }
+    }
+    std::cout << "Your array: ";
+    printArray(arr, size);
+    int longestChain = findLongestNonDecreasing(arr, size);
+    std::cout << "Length of the longest ordered chain: " << longestChain << std::endl;
+    float product;
+    if (computeProductBetweenExtremes(arr, size, product)) {
+        std::cout << "The product of elements between the maximum and minimum in absolute value: " << product << std::endl;
+    }
+    else {
+        std::cout << "No elements between max and min by absolute value." << std::endl;
+    }
+    sortEvenOdd(arr, size);
     std::cout << "New array: ";
     printArray(arr, size);
     delete[] arr;
     return 0;
 }
+
+

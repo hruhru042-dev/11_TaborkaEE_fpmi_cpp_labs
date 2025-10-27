@@ -1,2 +1,17 @@
-﻿  lab3_var37.cpp
-  lab3_var37.vcxproj -> C:\Users\User\11_TaborkaEE_fpmi_cpp_labs\semester_1\lab3_pointers_and_arrays\lab3_var37\x64\Debug\lab3_var37.exe
+﻿MSBUILD : error : Это необработанное исключение в MSBuild. ПРОГОЛОСУЙТЕ ЗА СУЩЕСТВУЮЩУЮ ПРОБЛЕМУ ИЛИ СООБЩИТЕ О НОВУЙ НА https://aka.ms/msbuild/unhandled
+MSBUILD : error :     System.TypeInitializationException: Инициализатор типа "Microsoft.Build.Collections.CopyOnWritePropertyDictionary`1" выдал исключение. ---> System.IO.FileLoadException: Не удалось загрузить файл или сборку "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" либо одну из их зависимостей. Файл подкачки слишком мал для завершения операции. (Исключение из HRESULT: 0x800705AF)
+MSBUILD : error :    в Microsoft.Build.Collections.CopyOnWritePropertyDictionary`1..cctor()
+MSBUILD : error :    --- Конец трассировки внутреннего стека исключений ---
+MSBUILD : error :    в Microsoft.Build.Execution.ProjectItemDefinitionInstance.Microsoft.Build.Evaluation.IItemDefinition<Microsoft.Build.Execution.ProjectMetadataInstance>.SetMetadata(ProjectMetadataElement xml, String evaluatedValue, ProjectMetadataInstance predecessor)
+MSBUILD : error :    в Microsoft.Build.Evaluation.Evaluator`4.EvaluateItemDefinitionElement(ProjectItemDefinitionElement itemDefinitionElement)
+MSBUILD : error :    в Microsoft.Build.Evaluation.Evaluator`4.EvaluateItemDefinitionGroupElement(ProjectItemDefinitionGroupElement itemDefinitionGroupElement)
+MSBUILD : error :    в Microsoft.Build.Evaluation.Evaluator`4.Evaluate()
+MSBUILD : error :    в Microsoft.Build.Evaluation.Evaluator`4.Evaluate(IEvaluatorData`4 data, Project project, ProjectRootElement root, ProjectLoadSettings loadSettings, Int32 maxNodeCount, PropertyDictionary`1 environmentProperties, ICollection`1 propertiesFromCommandLine, ILoggingService loggingService, IItemFactory`2 itemFactory, IToolsetProvider toolsetProvider, IDirectoryCacheFactory directoryCacheFactory, ProjectRootElementCacheBase projectRootElementCache, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, EvaluationContext evaluationContext, Boolean interactive)
+MSBUILD : error :    в Microsoft.Build.Execution.ProjectInstance.Initialize(ProjectRootElement xml, IDictionary`2 globalProperties, String explicitToolsVersion, String explicitSubToolsetVersion, Int32 visualStudioVersionFromSolution, BuildParameters buildParameters, ILoggingService loggingService, BuildEventContext buildEventContext, ISdkResolverService sdkResolverService, Int32 submissionId, Nullable`1 projectLoadSettings, EvaluationContext evaluationContext, IDirectoryCacheFactory directoryCacheFactory)
+MSBUILD : error :    в Microsoft.Build.BackEnd.BuildRequestConfiguration.<>c__DisplayClass61_0.<LoadProjectIntoConfiguration>b__0()
+MSBUILD : error :    в Microsoft.Build.BackEnd.BuildRequestConfiguration.InitializeProject(BuildParameters buildParameters, Func`1 loadProjectFromFile)
+MSBUILD : error :    в Microsoft.Build.BackEnd.RequestBuilder.<BuildProject>d__67.MoveNext()
+MSBUILD : error : --- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+MSBUILD : error :    в System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+MSBUILD : error :    в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+MSBUILD : error :    в Microsoft.Build.BackEnd.RequestBuilder.<RequestThreadProc>d__58.MoveNext()

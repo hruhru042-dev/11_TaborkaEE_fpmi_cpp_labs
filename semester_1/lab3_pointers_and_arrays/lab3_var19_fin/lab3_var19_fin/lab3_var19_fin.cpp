@@ -6,7 +6,7 @@
 #include <cmath> 
 const int length = 1000;
 const float EPSILON = 1e-6f;
-void printArray(const float arr[], int size) {
+void printArray(const float* arr, int size) {
     for (int i = 0; i < size; ++i)
         std::cout << arr[i] << " ";
     std::cout << std::endl;
@@ -49,7 +49,7 @@ int getChoice() {
     clearInput();
     return value;
 }
-void fillArrayRandom(float arr[], int size) {
+void fillArrayRandom(float* arr, int size) {
     std::cout << "Enter minimum range limit: ";
     float min_val = getValidFloat();
     std::cout << "Enter maximum range limit: ";
@@ -64,13 +64,13 @@ void fillArrayRandom(float arr[], int size) {
         arr[i] = dist(gen);
     }
 }
-void fillArrayManual(float arr[], int size) {
+void fillArrayManual(float* arr, int size) {
     for (int i = 0; i < size; ++i) {
         std::cout << "Element " << i + 1 << ": ";
         arr[i] = getValidFloat();
     }
 }
-int countUnique(const float arr[], int size) {
+int countUnique(float* arr, int size) {
     int count = 0;
     for (int i = 0; i < size; ++i) {
         bool isUnique = true;
@@ -85,7 +85,7 @@ int countUnique(const float arr[], int size) {
     }
     return count;
 }
-void sumBetweenNegatives(const float arr[], int size) {
+void sumBetweenNegatives(const float* arr, int size) {
     int first = -1, last = -1;
     for (int i = 0; i < size; ++i) {
         if (arr[i] < 0) {
@@ -99,17 +99,23 @@ void sumBetweenNegatives(const float arr[], int size) {
             break;
         }
     }
-    if (first != -1 && last != -1 && first < last) {
+     if (first == -1 || last == -1) {
+        std::cout << "There are no negative elements.\n";
+    }
+    else if (first == last) {
+        std::cout << "There is only one negative element in the array.\n";
+    }
+    else if (last - first == 1) {
+        std::cout << "There are no other values ​​between the first and last negative element.\n";
+    }
+    else {
         float sum = 0;
         for (int i = first + 1; i < last; ++i)
             sum += arr[i];
         std::cout << "Sum between first and last negative: " << sum << std::endl;
     }
-    else {
-        std::cout << "No negative elements found or only one.\n";
-    }
 }
-void compressArray(float arr[], int size, float x) {
+void compressArray(float* arr, int size, float x) {
     int write_index = 0;
     for (int read_index = 0; read_index < size; ++read_index) {
         if (arr[read_index] >= -x && arr[read_index] <= x)
@@ -143,5 +149,6 @@ int main() {
     printArray(arr, size);
     return 0;
 }
+
 
 

@@ -92,8 +92,12 @@ int findLongestNonDecreasing(float* arr, int size) {
 bool computeProductBetweenExtremes(float* arr, int size, float& product) {
     int maxIdx = 0, minIdx = 0;
     for (int i = 1; i < size; ++i) {
-        if (std::abs(arr[i]) > std::abs(arr[maxIdx])) maxIdx = i;
-        if (std::abs(arr[i]) < std::abs(arr[minIdx])) minIdx = i;
+        if (std::abs(arr[i]) > std::abs(arr[maxIdx])) {
+            maxIdx = i;
+        }
+        if (std::abs(arr[i]) < std::abs(arr[minIdx])) {
+            minIdx = i;
+        }
     }
     int start = std::min(maxIdx, minIdx);
     int end = std::max(maxIdx, minIdx);
@@ -151,6 +155,7 @@ int main() {
     delete[] arr;
     return 0;
 }
+
 
 
 

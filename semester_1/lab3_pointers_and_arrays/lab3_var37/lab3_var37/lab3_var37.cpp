@@ -101,7 +101,8 @@ bool computeProductBetweenExtremes(float* arr, int size, float& product) {
     }
     int start = std::min(maxIdx, minIdx);
     int end = std::max(maxIdx, minIdx);
-    if (start + 1 >= end) return false;
+    if (start + 1 >= end) {
+        std::cout << "no elements between extremes! \n";
     product = 1.0f;
     for (int i = start + 1; i < end; ++i) {
         product *= arr[i];
@@ -155,6 +156,7 @@ int main() {
     delete[] arr;
     return 0;
 }
+
 
 
 

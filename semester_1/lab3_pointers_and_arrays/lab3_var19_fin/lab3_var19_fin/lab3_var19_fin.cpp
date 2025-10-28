@@ -102,19 +102,18 @@ void sumBetweenNegatives(const float* arr, int size) {
      if (first == -1 || last == -1) {
         std::cout << "There are no negative elements.\n";
     }
-    else if (first == last) {
+     if (first == last) {
         std::cout << "There is only one negative element in the array.\n";
     }
-    else if (last - first == 1) {
+     if (last - first == 1) {
         std::cout << "There are no other values ​​between the first and last negative element.\n";
     }
-    else {
-        float sum = 0;
-        for (int i = first + 1; i < last; ++i)
-            sum += arr[i];
-        std::cout << "Sum between first and last negative: " << sum << std::endl;
+    if (first >= 0 && last > first && last < size) {
+    float sum = 0;
+    for (int i = first + 1; i < last; ++i)
+        sum += arr[i];
+    std::cout << "Sum between first and last negative: " << sum << std::endl;
     }
-}
 void compressArray(float* arr, int size, float x) {
     int write_index = 0;
     for (int read_index = 0; read_index < size; ++read_index) {
@@ -149,6 +148,7 @@ int main() {
     printArray(arr, size);
     return 0;
 }
+
 
 
 

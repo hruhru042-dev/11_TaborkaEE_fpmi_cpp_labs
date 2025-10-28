@@ -42,13 +42,13 @@ float getValidFloat() {
     clearInput();
     return value;
 }
-void printArray(const float arr[], int size) {
+void printArray(float* arr, int size) {
     for (int i = 0; i < size; ++i) {
         std::cout << arr[i] << " ";
     }
     std::cout << std::endl;
 }
-void fillArrayRandom(float arr[], int size) {
+void fillArrayRandom(float* arr, int size) {
     std::cout << "Enter minimum range limit: ";
     float min_val = getValidFloat();
     std::cout << "Enter maximum range limit: ";
@@ -63,7 +63,7 @@ void fillArrayRandom(float arr[], int size) {
         arr[i] = dist(gen);
     }
 }
-void fillArrayManual(float arr[], int size) {
+void fillArrayManual(float* arr, int size) {
     for (int i = 0; i < size; ++i) {
         std::cout << "Element " << i + 1 << ": ";
         std::cin >> arr[i];
@@ -77,7 +77,7 @@ void fillArrayManual(float arr[], int size) {
         }
     }
 }
-int findLongestNonDecreasing(const float arr[], int size) {
+int findLongestNonDecreasing(float* arr, int size) {
     int maxLength = 1, currentLength = 1;
     for (int i = 1; i < size; ++i) {
         if (arr[i] >= arr[i - 1])
@@ -89,7 +89,7 @@ int findLongestNonDecreasing(const float arr[], int size) {
     }
     return std::max(maxLength, currentLength);
 }
-bool computeProductBetweenExtremes(const float arr[], int size, float& product) {
+bool computeProductBetweenExtremes(float* arr, int size, float& product) {
     int maxIdx = 0, minIdx = 0;
     for (int i = 1; i < size; ++i) {
         if (std::abs(arr[i]) > std::abs(arr[maxIdx])) maxIdx = i;
@@ -104,7 +104,7 @@ bool computeProductBetweenExtremes(const float arr[], int size, float& product) 
     }
     return true;
 }
-void sortEvenOdd(float arr[], int size) {
+void sortEvenOdd(float* arr, int size) {
     for (int i = 0; i < size; i += 2) {
         for (int j = i + 2; j < size; j += 2) {
             if (arr[i] < arr[j]) {
@@ -151,5 +151,6 @@ int main() {
     delete[] arr;
     return 0;
 }
+
 
 

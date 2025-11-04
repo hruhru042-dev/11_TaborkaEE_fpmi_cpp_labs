@@ -15,15 +15,6 @@ void checkNegative(int num) {
 }
 int getLimit() {
     int limit;
-    std::cout << "Enter minimum range limit: ";
-    std::cin >> limit;
-    checkLetter();
-    return limit;
-}
-
-int getMaximumLimit() {
-    int limit;
-    std::cout << "Enter maximum range limit: ";
     std::cin >> limit;
     checkLetter();
     return limit;
@@ -170,5 +161,6 @@ int main() {
     }
     return 0;
 }
+
 
 

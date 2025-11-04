@@ -13,7 +13,7 @@ void checkNegative(int num) {
         throw "Error, number must be positive\n";
     }
 }
-int getMinimumLimit() {
+int getLimit() {
     int limit;
     std::cout << "Enter minimum range limit: ";
     std::cin >> limit;
@@ -51,8 +51,10 @@ void DeallocateMatrix(int**& matrix, int n) {
     matrix = nullptr;
 }
 void fillArrayRandom(int**& matrix, int n) {
-    int min_val = getMinimumLimit();
-    int max_val = getMaximumLimit();
+    std::cout << "Enter minimum range limit: ";
+    int min_val = getLimit();
+    std::cout << "Enter maximum range limit: ";
+    int max_val = getLimit();
     if (max_val < min_val) {
         std::swap(min_val, max_val);
     }
@@ -125,8 +127,7 @@ int movingMaximumElementToCorner(int**& matrix, int n) {
         }
     }
     if (!found) {
-        std::cout << "No positive elements!" << std::endl;
-        return -1;
+        throw  "No positive elements!" << std::endl;
     }
     if (maxRow != 0) {
         for (int j = 0; j < n; ++j) {
@@ -152,15 +153,9 @@ int main() {
         checkNegative(n);
         int** matrix = nullptr;
         AllocateMatrix(matrix, n);
+        fillArray(matrix, n);
         try {
-            fillArray(matrix, n);
             int maxInTriangle = searchMaxElementLowerRightTriangle(matrix, n);
-            if (maxInTriangle != -1) {
-                std::cout << "Maximum element of the lower right triangle of the matrix: " << maxInTriangle << std::endl;
-            }
-            else {
-                std::cout << "No elements in lower right triangle!" << std::endl;
-            }
             movingMaximumElementToCorner(matrix, n);
         }
         catch (const char* msg) {
@@ -175,4 +170,5 @@ int main() {
     }
     return 0;
 }
+
 

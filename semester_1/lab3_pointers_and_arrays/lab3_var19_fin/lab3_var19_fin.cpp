@@ -22,7 +22,7 @@ void checkNegative(int num) {
     }
 }
 void getIntLessThan1000(int value) {
-    if (!(std::cin) || value >= 1000) {
+    if (value >= 1000) {
         throw "Error: invalid integer input!";
     }
 }
@@ -106,13 +106,13 @@ void sumBetweenNegatives(const float* arr, int size) {
         }
     }
     if (first == -1 || last == -1) {
-        std::cout << "There are no negative elements.\n";
+        throw "There are no negative elements.\n";
     }
     if (first == last) {
-        std::cout << "There is only one negative element in the array.\n";
+        throw "There is only one negative element in the array.\n";
     }
     if (last - first == 1) {
-        std::cout << "There are no other values between the first and last negative element.\n";
+        throw "There are no other values between the first and last negative element.\n";
     }
     if (first >= 0 && last > first && last < size) {
         float sum = 0;
@@ -138,12 +138,13 @@ int main() {
         std::cin >> size;
         getIntLessThan1000(size);
         checkNegative(size);
+        checkLetter (size);
+        fillArray(arr, size);
+        std::cout << "Your array: ";
+        printArray(arr, size);
+        int uniqueCount = countUnique(arr, size);
+        std::cout << "Number of unique elements: " << uniqueCount << std::endl;
         try {
-            fillArray(arr, size);
-            std::cout << "Your array: ";
-            printArray(arr, size);
-            int uniqueCount = countUnique(arr, size);
-            std::cout << "Number of unique elements: " << uniqueCount << std::endl;
             sumBetweenNegatives(arr, size);
             int x;
             std::cout << "Enter number X: ";
@@ -163,5 +164,6 @@ int main() {
     }
     return 0;
 }
+
 
 

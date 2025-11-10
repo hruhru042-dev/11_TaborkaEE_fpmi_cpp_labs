@@ -100,10 +100,7 @@ int searchMaxElementLowerRightTriangle(int**& matrix, int n) {
         }
     }
     if (found) {
-     return max_value;
-    }
-    else {
-     return -1;
+        return max_value;
     }
 }
 int movingMaximumElementToCorner(int**& matrix, int n) {
@@ -165,9 +162,7 @@ int main() {
         DeallocateMatrix(matrix, n);
     }
     catch (const char* msg) {
-        std::cerr << msg << "\n";
+        std::cout << msg;
     }
     return 0;
 }
-
-

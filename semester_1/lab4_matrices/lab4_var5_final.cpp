@@ -99,7 +99,12 @@ int searchMaxElementLowerRightTriangle(int**& matrix, int n) {
             }
         }
     }
-    return found ? max_value : -1;
+    if (found) {
+     return max_value;
+    }
+    else {
+     return -1;
+    }
 }
 int movingMaximumElementToCorner(int**& matrix, int n) {
     int maxVal = 0;
@@ -164,4 +169,5 @@ int main() {
     }
     return 0;
 }
+
 

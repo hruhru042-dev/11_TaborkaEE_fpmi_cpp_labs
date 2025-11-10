@@ -160,7 +160,8 @@ int main() {
         DeallocateMatrix(matrix, n);
     }
     catch (const char* msg) {
-        std::cout << msg;
+        std::cerr << msg << "\n";
     }
     return 0;
 }
+

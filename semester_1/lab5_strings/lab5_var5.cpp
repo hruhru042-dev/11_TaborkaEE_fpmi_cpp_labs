@@ -68,7 +68,7 @@ void FindLongestPalindromes(const std::string& text, const std::string& delimete
         const std::string& word = words[i];
         if (checkPalindrome(word)) {
             if (word.size() > maxLength) {
-                longestPalindromes = { word };
+                longestPalindromes.push_back(word);
                 maxLength = word.size();
             }
             else if (word.size() == maxLength) {
@@ -106,4 +106,5 @@ int main() {
     }
 	return 0;
 }
+
 

@@ -62,11 +62,11 @@ int main() {
 		std::vector<std::string> lines = readLines(file);
 		file.close();
 		std::vector<std::string> substrings;
-		int globalMax = 0;
+		size_t globalMax = 0;
 		for (size_t i = 0; i < lines.size(); ++i) {
 			std::string sub = findTheLengthOfStrictlyIncreasingSubstring(lines[i]);
 			substrings.push_back(sub);
-			globalMax = std::max(globalMax, (int)sub.size());
+			globalMax = std::max(globalMax, sub.size());
 		}
 		std::cout << "Global maximum length: " << globalMax << std::endl;
 		printMaxLengthSubstrings(substrings, globalMax);
@@ -76,4 +76,5 @@ int main() {
 	}
 	return 0;
 }
+
 

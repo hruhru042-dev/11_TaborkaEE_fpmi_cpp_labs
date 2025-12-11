@@ -1,7 +1,4 @@
-﻿
-
-#include <iostream>
-
+﻿/*#include <iostream>
 int main()
 {
     int n;
@@ -19,5 +16,5 @@ int main()
         }
     }
     return 0;
-}
+} */
 

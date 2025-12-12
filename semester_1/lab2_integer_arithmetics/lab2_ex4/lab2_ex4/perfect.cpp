@@ -1,6 +1,5 @@
 
 #include "perfect.h"
-
 std::vector<int> findPerfectNumbers(int n) {
 	std::vector<int> result;
 	for (int i = 6; i <= n; ++i) {

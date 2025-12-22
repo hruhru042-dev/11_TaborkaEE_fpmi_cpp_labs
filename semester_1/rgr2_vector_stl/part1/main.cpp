@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <cmath>
 #include <limits> 
+#include <unordered_set>
+#include <iterator>
 void checkEmpty(std::vector<int>& v) {
     if (v.empty()) {
         throw "Vector is empty. Nothing to process";
@@ -17,11 +19,13 @@ std::vector<int> inputVector() {
     while (std::cin >> n) {
         v.push_back(n);
     }
+    if (!std::cin) { 
+        throw "Invalid input: expected integer.";
+    }
     return v;
 }
-int safeInput(const std::string& prompt) {
+int safeInput() {
     int value;
-    std::cout << prompt;
     if (!(std::cin >> value)) {
         throw "Invalid input: expected integer.";
     }
@@ -29,67 +33,50 @@ int safeInput(const std::string& prompt) {
 }
 void printVector(const std::vector<int>& v, const std::string& msg = "Vector") {
     std::cout << msg << ": ";
-    for (size_t i = 0; i < v.size(); ++i) {
-        std::cout << v[i] << " ";
-    }
+    std::copy(v.begin(), v.end(), std::ostream_iterator<int>(std::cout, " "));
     std::cout << "\n";
 }
-long long sumVector(const std::vector<int>& v) {
-    return std::accumulate(v.begin(), v.end(), 0LL);
-}
 void replaceZerosWithAverage(std::vector<int>& v) {
-    long long sum = sumVector(v);
-    int avg = sum / (int)v.size();
-    for (size_t i = 0; i < v.size(); ++i) {
-        if (v[i] == 0) {
-            v[i] = avg;
-        }
-    }
-}
-int countGreaterThan(const std::vector<int>& v, int p) {
-    return std::count_if(v.begin(), v.end(), [&](int n) { return n > p; });
-}
-int countEqualTo(const std::vector<int>& v, int m) {
-    return std::count(v.begin(), v.end(), m);
+    long long sum = std::accumulate(v.begin(), v.end(), 0LL);
+    int avg = sum / static_cast<int>(v.size());
+    std::replace_if(v.begin(), v.end(),
+        [](int n) { return n == 0; },
+        avg);
 }
 void replaceEvenAbsWithDiff(std::vector<int>& v) {
-    int minVal = *std::min_element(v.begin(), v.end());
-    int maxVal = *std::max_element(v.begin(), v.end());
-    int diff = maxVal - minVal;
-    for (size_t i = 0; i < v.size(); ++i) {
-        if (std::abs(v[i]) % 2 == 0) {
-            v[i] = diff;
-        }
-    }
+    if (v.empty()) return;
+    auto [minIt, maxIt] = std::minmax_element(v.begin(), v.end());
+    int diff = *maxIt - *minIt;
+    std::replace_if(v.begin(), v.end(),
+        [](int n) { return std::abs(n) % 2 == 0; },
+        diff);
 }
 void eraseDuplicatesByAbs(std::vector<int>& v) {
-    for (size_t i = 0; i < v.size(); ++i) {
-        for (size_t j = i + 1; j < v.size(); ) {
-            if (std::abs(v[j]) == std::abs(v[i])) {
-                v.erase(v.begin() + j);
+    std::unordered_set<int> seen;
+    v.erase(std::remove_if(v.begin(), v.end(),
+        [&](int n) {
+            int absVal = std::abs(n);
+            if (seen.find(absVal) != seen.end()) {
+                return true; // удалить
             }
-            else {
-                j++;
-            }
-        }
-    }
+            seen.insert(absVal);
+            return false; // оставить
+        }),
+        v.end());
 }
 void ensureIntervalOrder(int& l, int& r) {
-    if (l > r) {
-        std::swap(l, r);
-    }
+    auto [lo, hi] = std::minmax(l, r);
+    l = lo; r = hi;
 }
+
 void addIntervalSum(std::vector<int>& v, int l, int r) {
-    if (l < 0 || r >= (int)v.size() || l > r) {
+    if (l < 0 || r >= static_cast<int>(v.size()) || l > r) {
         throw "Invalid interval.";
     }
-    int sum = 0;
-    for (int i = l; i <= r; ++i) {
-        sum += v[i];
-    }
-    for (size_t i = 0; i < v.size(); ++i) {
-        v[i] += sum;
-    }
+    int sum = std::accumulate(v.begin() + l, v.begin() + r + 1, 0);
+    std::for_each(v.begin(), v.end(), [&](int& n) {
+        n += sum;
+        });
 }
 int main() {
     try {
@@ -97,24 +84,28 @@ int main() {
         checkEmpty(staff);
         printVector(staff, "Your vector");
         std::cout << "Number of elements: " << staff.size() << "\n";
-        long long sum = sumVector(staff);
+        long long sum = std::accumulate(staff.begin(), staff.end(), 0LL);
         std::cout << "Sum of elements: " << sum << "\n";
         replaceZerosWithAverage(staff);
         printVector(staff, "After replacing zeros with average");
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        int p = safeInput("Enter a number to count elements greater than it: ");
-        std::cout << "More than " << p << ": " << countGreaterThan(staff, p) << "\n";
-        int m = safeInput("Enter a number to count elements equal to it: ");
-        std::cout << "Equal to " << m << ": " << countEqualTo(staff, m) << "\n";
+        std::cout << "Enter a number to count elements greater than it: " << "\n";
+        int p = safeInput();
+        std::cout << "More than " << p << ": " << std::count_if(staff.begin(), staff.end(), [&](int n) { return n > p; }) << "\n";
+        std::cout << "Enter a number to count elements equal to it: " << "\n";
+        int m = safeInput();
+        std::cout << "Equal to " << m << ": " << std::count(staff.begin(), staff.end(), m) << "\n";
         replaceEvenAbsWithDiff(staff);
         printVector(staff, "After replace by difference");
         eraseDuplicatesByAbs(staff);
         printVector(staff, "After erase duplicates by abs");
-        int l = safeInput("Enter left bound of interval: "); 
-        int r = safeInput("Enter right bound of interval: ");
+        std::cout << "Enter left bound of interval: " << "\n";
+        int l = safeInput(); 
+        std::cout << "Enter right bound of interval: " << "\n";
+        int r = safeInput();
         ensureIntervalOrder(l, r);
-        addIntervalSum(staff, 1, 3);
+        addIntervalSum(staff, l, r);
         printVector(staff);
     }
     catch (const char* msg) {

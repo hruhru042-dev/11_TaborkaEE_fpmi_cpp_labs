@@ -33,7 +33,6 @@ void PrintTime(const std::time_t& time_to_print) {
 }
 
 
-
 std::time_t GenerateRandomTime(std::mt19937& generator) {
     std::uniform_int_distribution<size_t> hour_randomizer(0, MAX_HOUR_NUMBER_PER_DAY);
     std::uniform_int_distribution<size_t> minute_randomizer(0, MAX_MINUTE_NUMBER_PER_HOUR);

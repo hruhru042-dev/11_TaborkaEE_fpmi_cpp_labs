@@ -125,7 +125,7 @@ public:
             [](const StudentData& a, const StudentData& b) {
                 return averageMark(a) > averageMark(b);
             });
-        std::cout << "—туденты со средним баллом в диапазоне [" << min << ", " << max << "]:" << std::endl;
+        std::cout << "Students with average scores in the range [" << min << ", " << max << "]:" << std::endl;
         for (size_t i = 0; i < filtered.size(); ++i) {
             std::cout << filtered[i].name_ << " "
                 << filtered[i].number_ << " "

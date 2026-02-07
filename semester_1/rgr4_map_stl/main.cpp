@@ -23,256 +23,261 @@ struct StudentData {
     std::vector<Mark> marks_;
     StudentData() : name_(""), number_(0), marks_() {}
 };
-void isOpen(std::fstream& file) {
-    if (!(file.is_open())) {
-        throw "File cannot be open!";
-    }
-}
-void isEmpty(std::fstream& file) {
-    if (file.peek() == std::fstream::traits_type::eof()) {
-        throw "File is empty!";
-    }
-}
-void safeInputDouble(double& value) {
-    if (!(std::cin >> value)) {
-        throw "Invalid input!";
-    }
-}
 void safeInputString(std::string& value) {
     if (!(std::cin >> value)) {
         throw "Invalid input!";
     }
 }
-void loadFromFile(const std::string& filename, std::map<size_t, StudentData>& students) {
-    std::fstream fin(filename, std::ios::in);
-    isOpen(fin);
-    isEmpty(fin);
-    while (true) {
-        StudentData st;
-        if (!(fin >> st.name_ >> st.number_)) break;
-        std::string subj;
-        size_t mark;
-        while (fin.peek() != '\n' && fin >> subj >> mark) {
-            st.marks_.push_back(Mark(subj, mark));
+class StudentDataBase {
+private:
+    void isOpen(std::fstream& file) {
+        if (!(file.is_open())) {
+            throw "File cannot be open!";
         }
-        students[st.number_] = st;
     }
-}
-void printInlineByRecordBook(const std::map<size_t, StudentData>& students) {
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        const StudentData& student = it->second;
-        std::cout << student.name_ << " " << student.number_;
-        std::vector<Mark>::const_iterator mit;
-        for (size_t i = 0; i < student.marks_.size(); ++i) {
-            std::cout << " " << student.marks_[i].subject_
-                << " " << student.marks_[i].mark_;
+    void isEmpty(std::fstream& file) {
+        if (file.peek() == std::fstream::traits_type::eof()) {
+            throw "File is empty!";
         }
-        std::cout << std::endl;
     }
-}
-size_t totalScore(const StudentData& st) {
-    return std::accumulate(st.marks_.begin(), st.marks_.end(), 0,
-        [](size_t sum, const Mark& m) { return sum + m.mark_; });
-}
-double averageMark(const StudentData& st) {
-    if (st.marks_.empty()) return 0.0;
-    return static_cast<double>(totalScore(st)) / st.marks_.size();
-}
-void printSortedByNameAndAverage(const std::map<size_t, StudentData>& students) {
-    std::vector<StudentData> list;
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        list.push_back(it->second);
+    void safeInputDouble(double& value) {
+        if (!(std::cin >> value)) {
+            throw "Invalid input!";
+        }
     }
-    std::sort(list.begin(), list.end(),
-        [](const StudentData& a, const StudentData& b) {
-            if (a.name_ == b.name_) {
+    void normalizeLimits(double& min, double& max) {
+        if (max < min) {
+            std::swap(min, max);
+        }
+    }
+    static size_t totalScore(const StudentData& st) {
+        return std::accumulate(st.marks_.begin(), st.marks_.end(), 0,
+            [](size_t sum, const Mark& m) { return sum + m.mark_; });
+    }
+    static double averageMark(const StudentData& st) {
+        if (st.marks_.empty()) return 0.0;
+        return static_cast<double>(totalScore(st)) / st.marks_.size();
+    }
+public:
+    void loadFromFile(const std::string& filename, std::map<size_t, StudentData>& students) {
+        std::fstream fin(filename, std::ios::in);
+        isOpen(fin);
+        isEmpty(fin);
+        while (true) {
+            StudentData st;
+            if (!(fin >> st.name_ >> st.number_)) break;
+            std::string subj;
+            size_t mark;
+            while (fin.peek() != '\n' && fin >> subj >> mark) {
+                st.marks_.push_back(Mark(subj, mark));
+            }
+            students[st.number_] = st;
+        }
+    }
+    void printInlineByRecordBook(const std::map<size_t, StudentData>& students) {
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            const StudentData& student = it->second;
+            std::cout << student.name_ << " " << student.number_;
+            for (std::vector<Mark>::const_iterator mit = student.marks_.begin();
+                mit != student.marks_.end(); ++mit) {
+                std::cout << " " << mit->subject_ << " " << mit->mark_;
+            }
+            std::cout << std::endl;
+        }
+    }
+    void printSortedByNameAndAverage(const std::map<size_t, StudentData>& students) {
+        std::vector<StudentData> list;
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            list.push_back(it->second);
+        }
+        std::sort(list.begin(), list.end(),
+            [](const StudentData& a, const StudentData& b) {
+                if (a.name_ == b.name_) {
+                    return averageMark(a) > averageMark(b);
+                }
+                return a.name_ < b.name_;
+            });
+        for (size_t i = 0; i < list.size(); ++i) {
+            std::cout << (i + 1) << " " << list[i].name_ << " "
+                << list[i].number_ << " "
+                << averageMark(list[i]) << std::endl;
+        }
+    }
+   
+    void printByAverageRange(const std::map<size_t, StudentData>& students) {
+        double min, max;
+        std::cout << "Enter lower limit: ";
+        safeInputDouble(min);
+        std::cout << "Enter upper limit: ";
+        safeInputDouble(max);
+        normalizeLimits(min, max);
+        std::vector<StudentData> filtered;
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            double avg = averageMark(it->second);
+            if (avg >= min && avg <= max) {
+                filtered.push_back(it->second);
+            }
+        }
+        std::sort(filtered.begin(), filtered.end(),
+            [](const StudentData& a, const StudentData& b) {
                 return averageMark(a) > averageMark(b);
-            }
-            return a.name_ < b.name_;
-        });
-    for (size_t i = 0; i < list.size(); ++i) {
-        std::cout << (i + 1) << " " << list[i].name_ << " "
-            << list[i].number_ << " "
-            << averageMark(list[i]) << std::endl;
-    }
-}
-void normalizeLimits(double& min, double& max) {
-    if (max < min) { 
-        std::swap(min, max); 
-    }
-}
-void printByAverageRange(const std::map<size_t, StudentData>& students) {
-    double min, max;
-    std::cout << "Enter lower limit: ";
-    safeInputDouble(min);
-    std::cout << "Enter upper limit: ";
-    safeInputDouble(max);
-    normalizeLimits(min, max);
-    std::vector<StudentData> filtered;
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        double avg = averageMark(it->second);
-        if (avg >= min && avg <= max) {
-            filtered.push_back(it->second);
+            });
+        std::cout << "Студенты со средним баллом в диапазоне [" << min << ", " << max << "]:" << std::endl;
+        for (size_t i = 0; i < filtered.size(); ++i) {
+            std::cout << filtered[i].name_ << " "
+                << filtered[i].number_ << " "
+                << averageMark(filtered[i]) << std::endl;
         }
     }
-    std::sort(filtered.begin(), filtered.end(),
-        [](const StudentData& a, const StudentData& b) {
-            return averageMark(a) > averageMark(b);
-        });
-    std::cout << "Студенты со средним баллом в диапазоне [" << min << ", " << max << "]:" << std::endl;
-    for (size_t i = 0; i < filtered.size(); ++i) {
-        std::cout << filtered[i].name_ << " "
-            << filtered[i].number_ << " "
-            << averageMark(filtered[i]) << std::endl;
-    }
-}
-void printStudentsBySubject(const std::map<size_t, StudentData>& students) {
-    std::string targetSubject;
-    std::cout << "Enter subject: ";
-    safeInputString(targetSubject);
-    std::cout << "Students who took the subject " << targetSubject << ":" << std::endl;
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        const StudentData& student = it->second;
-        for (size_t i = 0; i < student.marks_.size(); ++i) {
-            if (student.marks_[i].subject_ == targetSubject) {
-                std::cout << student.name_ << " "
-                    << student.number_ << std::endl;
-                break;
+    void printStudentsBySubject(const std::map<size_t, StudentData>& students) {
+        std::string targetSubject;
+        std::cout << "Enter subject: ";
+        safeInputString(targetSubject);
+        std::cout << "Students who took the subject " << targetSubject << ":" << std::endl;
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            const StudentData& student = it->second;
+            for (size_t i = 0; i < student.marks_.size(); ++i) {
+                if (student.marks_[i].subject_ == targetSubject) {
+                    std::cout << student.name_ << " "
+                        << student.number_ << std::endl;
+                    break;
+                }
             }
         }
     }
-}
-void countStudentsPerSubject(const std::map<size_t, StudentData>& students) {
-    std::map<std::string, size_t> subjectCounts;
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        const StudentData& student = it->second;
-        std::vector<std::string> seenSubjects;
-        for (size_t i = 0; i < student.marks_.size(); ++i) {
-            const std::string& subj = student.marks_[i].subject_;
-            if (std::find(seenSubjects.begin(), seenSubjects.end(), subj) == seenSubjects.end()) {
-                subjectCounts[subj]++;
-                seenSubjects.push_back(subj);
+    void countStudentsPerSubject(const std::map<size_t, StudentData>& students) {
+        std::map<std::string, size_t> subjectCounts;
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            const StudentData& student = it->second;
+            std::vector<std::string> seenSubjects;
+            for (size_t i = 0; i < student.marks_.size(); ++i) {
+                const std::string& subj = student.marks_[i].subject_;
+                if (std::find(seenSubjects.begin(), seenSubjects.end(), subj) == seenSubjects.end()) {
+                    subjectCounts[subj]++;
+                    seenSubjects.push_back(subj);
+                }
+            }
+        }
+        std::cout << "Number of students in each subject: " << std::endl;
+        std::map<std::string, size_t>::const_iterator sit;
+        for (sit = subjectCounts.begin(); sit != subjectCounts.end(); ++sit) {
+            std::cout << sit->first << ": " << sit->second << std::endl;
+        }
+    }
+    void printSubjectAverages(const std::map<size_t, StudentData>& students) {
+        std::map<std::string, std::vector<size_t>> subjectMarks;
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            const StudentData& student = it->second;
+            for (size_t i = 0; i < student.marks_.size(); ++i) {
+                const std::string& subj = student.marks_[i].subject_;
+                size_t mark = student.marks_[i].mark_;
+                subjectMarks[subj].push_back(mark);
+            }
+        }
+        std::vector<std::pair<std::string, double>> subjectAverages;
+        std::map<std::string, std::vector<size_t>>::const_iterator sit;
+        for (sit = subjectMarks.begin(); sit != subjectMarks.end(); ++sit) {
+            const std::string& subj = sit->first;
+            const std::vector<size_t>& marks = sit->second;
+
+            double avg = 0.0;
+            if (!marks.empty()) {
+                double sum = std::accumulate(marks.begin(), marks.end(), 0.0);
+                avg = sum / static_cast<double>(marks.size());
+            }
+            subjectAverages.push_back(std::make_pair(subj, avg));
+        }
+        std::sort(subjectAverages.begin(), subjectAverages.end(),
+            [](const std::pair<std::string, double>& a, const std::pair<std::string, double>& b) {
+                return a.second > b.second;
+            });
+        std::cout << "Average score for each subject:\n";
+        for (size_t i = 0; i < subjectAverages.size(); ++i) {
+            std::cout << subjectAverages[i].first << ": "
+                << subjectAverages[i].second << std::endl;
+        }
+    }
+    void printMaxTotalScoreStudents(const std::map<size_t, StudentData>& students) {
+        size_t maxSum = 0;
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            const StudentData& st = it->second;
+            size_t total = 0;
+            for (size_t i = 0; i < st.marks_.size(); ++i) {
+                total += st.marks_[i].mark_;
+            }
+            if (total > maxSum) {
+                maxSum = total;
+            }
+        }
+        std::cout << "Students with the maximum score (" << maxSum << "):" << std::endl;
+        for (it = students.begin(); it != students.end(); ++it) {
+            const StudentData& st = it->second;
+            size_t total = 0;
+            for (size_t i = 0; i < st.marks_.size(); ++i) {
+                total += st.marks_[i].mark_;
+            }
+            if (total == maxSum) {
+                std::cout << st.name_ << " " << st.number_ << " Сумма: " << total << std::endl;
             }
         }
     }
-    std::cout << "Number of students in each subject: " << std::endl;
-    std::map<std::string, size_t>::const_iterator sit;
-    for (sit = subjectCounts.begin(); sit != subjectCounts.end(); ++sit) {
-        std::cout << sit->first << ": " << sit->second << std::endl;
-    }
-}
-void printSubjectAverages(const std::map<size_t, StudentData>& students) {
-    std::map<std::string, std::vector<size_t>> subjectMarks;
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        const StudentData& student = it->second;
-        for (size_t i = 0; i < student.marks_.size(); ++i) {
-            const std::string& subj = student.marks_[i].subject_;
-            size_t mark = student.marks_[i].mark_;
-            subjectMarks[subj].push_back(mark);
-        }
-    }
-    std::vector<std::pair<std::string, double>> subjectAverages;
-    std::map<std::string, std::vector<size_t>>::const_iterator sit;
-    for (sit = subjectMarks.begin(); sit != subjectMarks.end(); ++sit) {
-        const std::string& subj = sit->first;
-        const std::vector<size_t>& marks = sit->second;
-      
-        double avg = 0.0;
-        if (!marks.empty()) {
-            double sum = std::accumulate(marks.begin(), marks.end(), 0.0);
-            avg = sum / static_cast<double>(marks.size());
-        }
-        subjectAverages.push_back({ subj, avg });
-    }
-    std::sort(subjectAverages.begin(), subjectAverages.end(),
-        [](const std::pair<std::string, double>& a, const std::pair<std::string, double>& b) {
-            return a.second > b.second;
-        });
-    std::cout << "Average score for each subject:\n";
-    for (size_t i = 0; i < subjectAverages.size(); ++i) {
-        std::cout << subjectAverages[i].first << ": "
-            << subjectAverages[i].second << std::endl;
-    }
-}
-void printMaxTotalScoreStudents(const std::map<size_t, StudentData>& students) {
-    size_t maxSum = 0;
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        const StudentData& st = it->second;
-        size_t total = 0;
-        for (size_t i = 0; i < st.marks_.size(); ++i) {
-            total += st.marks_[i].mark_;
-        }
-        if (total > maxSum) {
-            maxSum = total;
-        }
-    }
-    std::cout << "Students with the maximum score (" << maxSum << "):" <<std::endl;
-    for (it = students.begin(); it != students.end(); ++it) {
-        const StudentData& st = it->second;
-        size_t total = 0;
-        for (size_t i = 0; i < st.marks_.size(); ++i) {
-            total += st.marks_[i].mark_;
-        }
-        if (total == maxSum) {
-            std::cout << st.name_ << " " << st.number_ << " Сумма: " << total << std::endl;
-        }
-    }
-}
-void printStudentsWithBadMarks(const std::map<size_t, StudentData>& students) {
-    std::cout << "Students with unsatisfactory grades (1, 2, 3):" << std::endl;
-    std::map<size_t, StudentData>::const_iterator it;
-    for (it = students.begin(); it != students.end(); ++it) {
-        const StudentData& st = it->second;
-        bool hasBadMark = false;
-        for (size_t i = 0; i < st.marks_.size(); ++i) {
-            size_t mark = st.marks_[i].mark_;
-            if (mark >= 1 && mark <= 3) {
-                hasBadMark = true;
-                break;
+    void printStudentsWithBadMarks(const std::map<size_t, StudentData>& students) {
+        std::cout << "Students with unsatisfactory grades (1, 2, 3):" << std::endl;
+        std::map<size_t, StudentData>::const_iterator it;
+        for (it = students.begin(); it != students.end(); ++it) {
+            const StudentData& st = it->second;
+            bool hasBadMark = false;
+            for (size_t i = 0; i < st.marks_.size(); ++i) {
+                size_t mark = st.marks_[i].mark_;
+                if (mark >= 1 && mark <= 3) {
+                    hasBadMark = true;
+                    break;
+                }
+            }
+            if (hasBadMark) {
+                std::cout << st.name_ << " " << st.number_ << std::endl;
             }
         }
-        if (hasBadMark) {
-            std::cout << st.name_ << " " << st.number_ << std::endl;
-        }
     }
-}
+};
 int main() {
     std::map<size_t, StudentData> students;
     std::string filename;
+    StudentDataBase db;
     try {
         std::cout << "Enter the name of the data file: ";
         safeInputString(filename);
-        loadFromFile(filename, students);
+        db.loadFromFile(filename, students);
         std::cout << "1. All students by record number:" << std::endl;
-        printInlineByRecordBook(students);
+        db.printInlineByRecordBook(students);
         std::cout << std::endl;
-        std::cout << "2. Students in alphabetical order (average score in descending order if there is a match):\n";
-        printSortedByNameAndAverage(students);
+        std::cout << "2. Students in alphabetical order (average score in descending order if there is a match):" << std::endl;
+        db.printSortedByNameAndAverage(students);
         std::cout << std::endl;
         std::cout << "3. Students in the given GPA range:" << std::endl;
-        printByAverageRange(students);
+        db.printByAverageRange(students);
         std::cout << std::endl;
         std::cout << "4. Students who took the specified subject:" << std::endl;
-        printStudentsBySubject(students);
+        db.printStudentsBySubject(students);
         std::cout << std::endl;
         std::cout << "5. Number of students in each subject:" << std::endl;
-        countStudentsPerSubject(students);
+        db.countStudentsPerSubject(students);
         std::cout << std::endl;
         std::cout << "6. Average score for each subject (descending):" << std::endl;
-        printSubjectAverages(students);
+        db.printSubjectAverages(students);
         std::cout << std::endl;
         std::cout << "7. Students with the maximum total score:" << std::endl;
-        printMaxTotalScoreStudents(students);
+        db.printMaxTotalScoreStudents(students);
         std::cout << std::endl;
         std::cout << "8. Students with unsatisfactory grades (1, 2, 3):" << std::endl;
-        printStudentsWithBadMarks(students);
+        db.printStudentsWithBadMarks(students);
         std::cout << std::endl;
     }
     catch (const char* msg) {
@@ -280,4 +285,5 @@ int main() {
     }
     return 0;
 }
+
 
